@@ -1,0 +1,6 @@
+resource_group_name = "gomycode-dev-rg"
+location            = "westeurope"
+vm_name             = "gomycode-dev-vm"
+vm_size             = "Standard_D2s_v3"
+admin_username      = "azureuser"
+environment         = "dev"

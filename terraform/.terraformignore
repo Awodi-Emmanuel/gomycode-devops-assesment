@@ -1,0 +1,12 @@
+# Ignore state files
+*.tfstate
+*.tfstate.backup
+
+# Ignore terraform directory
+.terraform/
+
+# Ignore variable files with secrets
+*.tfvars
+
+# Ignore test files
+**/*_test.go

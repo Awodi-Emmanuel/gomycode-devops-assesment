@@ -1,0 +1,24 @@
+---
+name: YAML Lint
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - staging
+      - prod
+
+jobs:
+  yamllint:
+    name: Lint YAML Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Run yamllint
+        run: yamllint .

@@ -1,14 +1,31 @@
-name: Dev Deployment Pipeline
+name: DevOps Pipeline
 
 on:
   push:
     branches:
+      - feature/*
       - dev
 
 jobs:
-  deploy:
-    name: Deploy with Ansible to Azure VM
+  ci:
+    name: CI - Validate Code
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/feature/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Run yamllint
+        run: yamllint .
+
+  cd:
+    name: CD - Deploy to Azure VM
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
 
     steps:
       - name: Checkout code
@@ -26,8 +43,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Add known host
-        run: |
-          ssh-keyscan -H 20.234.217.116 >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H 20.234.217.116 >> ~/.ssh/known_hosts
 
       - name: Run Ansible Playbook
         run: |

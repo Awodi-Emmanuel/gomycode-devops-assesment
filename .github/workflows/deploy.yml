@@ -31,3 +31,8 @@ jobs:
       - name: Run Ansible Playbook
         run: |
           ansible-playbook -i inventories/azure.ini playbooks/nginx.yml
+
+      - name: Run Ansible Playbook
+        run: |
+          export ANSIBLE_ROLES_PATH=ansible/roles
+          ansible-playbook -i ansible/inventories/azure.ini ansible/playbooks/nginx.yml

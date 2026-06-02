@@ -1,13 +1,12 @@
-name: Dev Deployment Pipeline
+name: Deploy Nginx with Ansible
 
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   deploy:
-    name: Deploy with Ansible to Azure VM
     runs-on: ubuntu-latest
 
     steps:
@@ -31,4 +30,4 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i ansible/inventories/azure.ini ansible/playbooks/nginx.yml
+          ansible-playbook -i inventories/azure.ini playbooks/nginx.yml

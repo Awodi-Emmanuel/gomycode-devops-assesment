@@ -1,24 +1,51 @@
 ---
-name: YAML Lint
+name: DevOps Pipeline
 
 on:
-  pull_request:
+  push:
     branches:
+      - feature/*
       - dev
-      - staging
-      - prod
 
 jobs:
-  yamllint:
-    name: Lint YAML Files
+  ci:
+    name: CI - Validate Code
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/feature/')
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install yamllint
         run: pip install yamllint
 
       - name: Run yamllint
         run: yamllint .
+
+  cd:
+    name: CD - Deploy to Azure VM
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AZURE_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Add known host
+        run: ssh-keyscan -H 20.234.217.116 >> ~/.ssh/known_hosts
+
+      - name: Run Ansible Playbook
+        run: |
+          ansible-playbook -i ansible/inventories/azure.ini ansible/playbooks/nginx.yml
